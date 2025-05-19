@@ -62,7 +62,7 @@ export const withdrawMoney = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   const { userId } = req.params;
   const { amount } = req.body;
 
@@ -77,7 +77,7 @@ export const withdrawMoney = async (
       return next(error);
     }
     if (account.balance < amount) {
-      return res.status(400).json({ message: "Insufficient funds" });
+      res.status(400).json({ message: "Insufficient funds" });
     }
 
     account.balance -= amount;
