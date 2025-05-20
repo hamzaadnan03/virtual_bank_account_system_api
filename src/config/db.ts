@@ -3,7 +3,7 @@ import { config } from "./config";
 
 const connectDb = async () => {
   try {
-    mongoose.connection.on("conneted", () => {
+    mongoose.connection.on("connected", () => {
       console.log("Connected to datababse successfully");
     });
     mongoose.connection.on("error", (err) => {
