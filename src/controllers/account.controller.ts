@@ -47,7 +47,7 @@ export const depositMoney = async (
     await account.save();
 
     await Transaction.create({
-      accountId: account._id,
+      accountId: userId,
       type: "deposit",
       amount,
     });
@@ -105,7 +105,7 @@ export const getTransactionHistory = async (
   const { userId } = req.user!;
 
   try {
-    const transactions = await Transaction.find({ userId }).sort({
+    const transactions = await Transaction.find({ accountId: userId }).sort({
       createdAt: -1,
     });
     res.json({ history: transactions });
