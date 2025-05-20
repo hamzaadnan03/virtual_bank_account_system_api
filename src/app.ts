@@ -16,7 +16,7 @@ app.use(express.json());
 
 //routes for user
 app.use("/api/v1/users", userRoutes);
-app.use("/api/accounts", accountRoutes);
+app.use("/api/v1/accounts", accountRoutes);
 
 app.use(globalErrorHanlder);
 
