@@ -29,10 +29,14 @@ export const authenticate = (
   }
 
   try {
-    const decoded = jwt.verify(token, config.jwtSecret as string) as {
-      userId: string;
-    };
-    (req as AuthenticatedRequest).user = { userId: decoded.userId };
+    const decoded = jwt.verify(token, config.jwtSecret as string);
+
+    if (typeof decoded !== "object" || !decoded || !("userId" in decoded)) {
+      throw new Error("Invalid token payload");
+    }
+
+    const { userId } = decoded as { userId: string };
+    (req as AuthenticatedRequest).user = { userId };
     next();
   } catch (err) {
     return next(err);

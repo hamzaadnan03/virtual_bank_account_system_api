@@ -5,19 +5,20 @@ import {
   getTransactionHistory,
   withdrawMoney,
 } from "../controllers/account.controller";
+import { authenticate } from "../middlewares/authenticate";
 
 const router = express.Router();
 
-// GET /api/accounts/:userId/balance
-router.get("/:userId/balance", getBalance);
+// GET /api/accounts/balance
+router.get("/balance", authenticate, getBalance);
 
-// POST /api/accounts/:userId/deposit
-router.post("/:userId/deposit", depositMoney);
+// POST /api/accounts/deposit
+router.post("/deposit", authenticate, depositMoney);
 
-// POST /api/accounts/:userId/withdraw
-router.post("/:userId/withdraw", withdrawMoney);
+// POST /api/accounts/withdraw
+router.post("/withdraw", authenticate, withdrawMoney);
 
-// GET /api/accounts/:userId/transactions
-router.get("/:userId/transactions", getTransactionHistory);
+// GET /api/accounts/transactions
+router.get("/transactions", authenticate, getTransactionHistory);
 
 export default router;

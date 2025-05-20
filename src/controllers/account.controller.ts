@@ -1,14 +1,15 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import User from "../models/user.model";
 import Transaction from "../models/account.model";
 import createHttpError from "http-errors";
+import { AuthenticatedRequest } from "../middlewares/authenticate";
 
 export const getBalance = async (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
 ) => {
-  const { userId } = req.params;
+  const { userId } = req.user!;
 
   try {
     const account = await User.findById(userId);
@@ -25,11 +26,11 @@ export const getBalance = async (
 
 // Deposit money
 export const depositMoney = async (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
 ) => {
-  const { userId } = req.params;
+  const { userId } = req.user!;
   const { amount } = req.body;
 
   if (!amount || amount <= 0) {
@@ -59,11 +60,11 @@ export const depositMoney = async (
 
 // Withdraw money
 export const withdrawMoney = async (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const { userId } = req.params;
+  const { userId } = req.user!;
   const { amount } = req.body;
 
   if (!amount || amount <= 0) {
@@ -97,11 +98,11 @@ export const withdrawMoney = async (
 
 // View transaction history
 export const getTransactionHistory = async (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
 ) => {
-  const { userId } = req.params;
+  const { userId } = req.user!;
 
   try {
     const transactions = await Transaction.find({ userId }).sort({
