@@ -8,7 +8,7 @@ export const getBalance = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
-) => {
+): Promise<Response | void> => {
   const { userId } = req.user!;
 
   try {
@@ -18,7 +18,7 @@ export const getBalance = async (
       return next(error);
     }
 
-    res.json({ balance: account.balance });
+    return res.json({ balance: account.balance });
   } catch (err) {
     next(err);
   }
@@ -29,7 +29,7 @@ export const depositMoney = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
-) => {
+): Promise<Response | void> => {
   const { userId } = req.user!;
   const { amount } = req.body;
 
@@ -52,7 +52,10 @@ export const depositMoney = async (
       amount,
     });
 
-    res.json({ message: "Deposit successful", newBalance: account.balance });
+    return res.json({
+      message: "Deposit successful",
+      newBalance: account.balance,
+    });
   } catch (err) {
     next(err);
   }
@@ -63,7 +66,7 @@ export const withdrawMoney = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
-): Promise<void> => {
+): Promise<Response | void> => {
   const { userId } = req.user!;
   const { amount } = req.body;
 
@@ -78,7 +81,7 @@ export const withdrawMoney = async (
       return next(error);
     }
     if (account.balance < amount) {
-      res.status(400).json({ message: "Insufficient funds" });
+      return res.status(400).json({ message: "Insufficient funds" });
     }
 
     account.balance -= amount;
@@ -90,7 +93,10 @@ export const withdrawMoney = async (
       amount,
     });
 
-    res.json({ message: "Withdrawal successful", newBalance: account.balance });
+    return res.json({
+      message: "Withdrawal successful",
+      newBalance: account.balance,
+    });
   } catch (err) {
     next(err);
   }
@@ -101,14 +107,14 @@ export const getTransactionHistory = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
-) => {
+): Promise<Response | void> => {
   const { userId } = req.user!;
 
   try {
     const transactions = await Transaction.find({ accountId: userId }).sort({
       createdAt: -1,
     });
-    res.json({ history: transactions });
+    return res.json({ history: transactions });
   } catch (err) {
     next(err);
   }
